@@ -1,0 +1,22 @@
+{
+  "name": "mev-simulator",
+  "version": "1.0.0",
+  "description": "MEV Attack Simulator for XDI/ETH Pairs",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js",
+    "simulate": "hardhat run scripts/simulate.js",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "@openzeppelin/contracts": "^4.8.0",
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "ethereum-waffle": "^4.0.10",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.14.0"
+  }
+}
