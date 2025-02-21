@@ -67,3 +67,4 @@ mev-simulator/
 ├── .env
 └── package.json
 ```
+Note: This is a working prototype. To use it effectively, please ensure you configure the necessary details as per your requirements. If you encounter any issues, feel free to create an issue in this repository, and our team will review and resolve it.
