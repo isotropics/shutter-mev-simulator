@@ -1,4 +1,4 @@
-# MEV Simulator - Implementation Guide
+# MEV Simulator
 
 # Disclaimer
 
