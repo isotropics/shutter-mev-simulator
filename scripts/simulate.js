@@ -1,5 +1,39 @@
 const { ethers } = require("hardhat");
-
+const fs = require("fs");
+// Define the maximum log file size (Updated to 10MB)
+const MAX_LOG_SIZE = 10 * 1024 * 1024; // 10MB
+// Function to get the log file name
+async function getLogFileName() {
+    const now = new Date();
+    const hour = now.getHours();
+    const date = now.toISOString().split("T")[0]; // YYYY-MM-DD format
+    return `logs/transactions_${date}_${hour}.log`;
+}
+// Function to check and rotate logs
+async function rotateLogIfNeeded() {
+    const logFileName = getLogFileName();
+  
+    if (fs.existsSync(logFileName)) {
+      const stats = fs.statSync(logFileName);
+      if (stats.size > MAX_LOG_SIZE) {
+        const timestamp = new Date().toISOString().replace(/[:.-]/g, "_");
+        const rotatedLogFileName = `logs/transactions_${timestamp}.log`;
+        fs.renameSync(logFileName, rotatedLogFileName);
+        console.log(`Log file rotated: ${logFileName} -> ${rotatedLogFileName}`);
+      }
+    }
+}
+// Function to log transactions
+async function logTransaction(transId, mevType, tradeAmount, profit_percentage, original_loss_percentage) {
+    const now = new Date();
+    const date = now.toISOString().split("T")[0];
+    const time = now.toTimeString().split(" ")[0];
+    const logMessage = `date=${date},time=${time},trans_id=${transId},mev_type=${mevType},trade_amnt=${tradeAmount},profit_percentage=${profit_percentage},original_loss_percentage=${original_loss_percentage}`;
+    const logFileName = getLogFileName();
+    rotateLogIfNeeded();
+    fs.appendFileSync(logFileName, logMessage + "\n");
+    console.log(logMessage);
+}
 async function simulateMEVAttack(dexSimulator, victimAmount) {
     try {
         // 1. Get initial state
@@ -51,6 +85,11 @@ async function simulateMEVAttack(dexSimulator, victimAmount) {
         console.log("Gas cost:", ethers.utils.formatEther(gasCost), "ETH");
         console.log("Net MEV profit:", ethers.utils.formatEther(mevImpact.sub(gasCost)), "ETH");
 
+        const mevProfit = mevImpact.sub(gasCost);
+        const profitPercentage = mevProfit.mul(100).div(expectedOutput);
+        // Generate transaction ID (use the hash of victim's trade as an example)
+        const trans_id = victimResult.transactionHash;
+        await logTransaction(trans_id,"front_run",ethers.utils.formatEther(victimAmount),ethers.utils.formatEther(profitPercentage),impactPercentage.toString());
         return {
             expectedOutput,
             actualOutput,
