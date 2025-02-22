@@ -10,7 +10,10 @@ UNISWAP_ROUTER=0x1C232F01118CB8B424793ae03F870aa7D0ac7f77
 XDI_TOKEN_ADDRESS=your_xdi_token_address
 GAS_LIMIT=2000000
 GAS_PRICE=5
-```
+
+TEST_AMOUNT="1"// Amount in XDI
+VICTIM_AMOUNT="100"// Victim trade size
+SLIPPAGE="5"
 
 3. Run tests:
 ```bash
