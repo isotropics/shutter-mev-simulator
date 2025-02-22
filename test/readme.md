@@ -14,6 +14,7 @@ GAS_PRICE=5
 TEST_AMOUNT="1"// Amount in XDI
 VICTIM_AMOUNT="100"// Victim trade size
 SLIPPAGE="5"
+```
 
 3. Run tests:
 ```bash
