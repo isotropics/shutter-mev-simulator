@@ -1,4 +1,37 @@
-# MEV Simulator - Complete Implementation Guide
+# MEV Simulator - Implementation Guide
+
+# Disclaimer
+
+This MEV Simulator is an experimental project designed strictly for educational and research purposes. It demonstrates the mechanics of MEV (Maximal Extractable Value) in DeFi environments to help understand their impact and the importance of protective measures.
+
+## Important Notice
+
+- This project is FOR EDUCATIONAL PURPOSES ONLY
+- The code and documentation are experimental and should not be used in production
+- This simulator demonstrates potential vulnerabilities in DeFi transactions
+- We do not encourage or support any malicious use of MEV strategies
+- The authors and contributors assume NO RESPONSIBILITY for any misuse or consequences
+
+## Intended Use
+
+- Academic research
+- Educational demonstrations
+- Security awareness
+- Protocol testing in controlled environments
+- Understanding DeFi transaction mechanics
+
+## Limitations & Risks
+
+- Not audited for production use
+- May contain bugs or vulnerabilities
+- No guarantee of accuracy or reliability
+- Should not be used for actual trading or deployment
+- May not reflect current market conditions or changes in protocols
+
+By using this codebase, you acknowledge that you understand these risks and will use it responsibly and ethically for educational purposes only.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY.
+```
 
 ## Table of Contents
 1. Project Overview
