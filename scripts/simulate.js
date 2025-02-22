@@ -24,11 +24,11 @@ async function rotateLogIfNeeded() {
     }
 }
 // Function to log transactions
-async function logTransaction(transId, mevType, tradeAmount, profit_percentage, original_loss_percentage) {
+async function logTransaction(transId, mevType, tradeAmount,expectedAMount, profit_percentage, original_loss_percentage) {
     const now = new Date();
     const date = now.toISOString().split("T")[0];
     const time = now.toTimeString().split(" ")[0];
-    const logMessage = `date=${date},time=${time},trans_id=${transId},mev_type=${mevType},trade_amnt=${tradeAmount},profit_percentage=${profit_percentage},original_loss_percentage=${original_loss_percentage}`;
+    const logMessage = `date=${date},time=${time},trans_id=${transId},mev_type=${mevType},trade_amnt=${tradeAmount},expected_amnt=${expectedAMount},profit_percentage=${profit_percentage},original_loss_percentage=${original_loss_percentage}`;
     const logFileName = getLogFileName();
     rotateLogIfNeeded();
     fs.appendFileSync(logFileName, logMessage + "\n");
@@ -89,7 +89,7 @@ async function simulateMEVAttack(dexSimulator, victimAmount) {
         const profitPercentage = mevProfit.mul(100).div(expectedOutput);
         // Generate transaction ID (use the hash of victim's trade as an example)
         const trans_id = victimResult.transactionHash;
-        await logTransaction(trans_id,"front_run",ethers.utils.formatEther(victimAmount),ethers.utils.formatEther(profitPercentage),impactPercentage.toString());
+        await logTransaction(trans_id,"front_run",ethers.utils.formatEther(victimAmount),ethers.utils.formatEther(expectedOutput),ethers.utils.formatEther(profitPercentage),impactPercentage.toString());
         return {
             expectedOutput,
             actualOutput,
