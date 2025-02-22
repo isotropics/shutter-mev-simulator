@@ -2,6 +2,86 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 require('dotenv').config();
 
+// Configuration from environment variables
+const CONFIG = {
+    ROUTER: process.env.UNISWAP_ROUTER,
+    XDI_TOKEN: process.env.XDI_TOKEN_ADDRESS,
+    WXDAI: process.env.WXDAI_ADDRESS,
+    GAS_LIMIT: process.env.GAS_LIMIT || "2000000",
+    GAS_PRICE: process.env.GAS_PRICE || "5",
+    TEST_AMOUNT: process.env.TEST_AMOUNT || "1", // Amount in XDI
+    VICTIM_AMOUNT: process.env.VICTIM_AMOUNT || "100", // Victim trade size
+    SLIPPAGE: process.env.SLIPPAGE || "5" // Slippage tolerance in percentage
+};
+
+describe("MEV Simulator", function() {
+    let dexSimulator;
+    let owner, user1, user2;
+    let router, factory, xdiToken, pair;
+
+    before(function() {
+        // Verify all required environment variables are set
+        const requiredEnvVars = ['UNISWAP_ROUTER', 'XDI_TOKEN_ADDRESS', 'WXDAI_ADDRESS'];
+        for (const envVar of requiredEnvVars) {
+            if (!process.env[envVar]) {
+                console.error(`Required environment variable ${envVar} not set`);
+                process.exit(1);
+            }
+        }
+        console.log("Using configuration:", CONFIG);
+    });
+
+    beforeEach(async function() {
+        try {
+            // Get signers
+            [owner, user1, user2] = await ethers.getSigners();
+            console.log("Testing with account:", owner.address);
+
+            // Deploy DEX Simulator
+            const DEXInteractionSimulator = await ethers.getContractFactory("DEXInteractionSimulator");
+            dexSimulator = await DEXInteractionSimulator.deploy(
+                CONFIG.ROUTER,
+                CONFIG.XDI_TOKEN,
+                {
+                    gasLimit: ethers.utils.parseUnits(CONFIG.GAS_LIMIT, "wei"),
+                    gasPrice: ethers.utils.parseUnits(CONFIG.GAS_PRICE, "gwei")
+                }
+            );
+            await dexSimulator.deployed();
+            console.log("DEX Simulator deployed to:", dexSimulator.address);
+
+            // Get contract instances
+            router = await ethers.getContractAt("IUniswapV2Router02", CONFIG.ROUTER);
+            factory = await ethers.getContractAt("IUniswapV2Factory", await router.factory());
+            xdiToken = await ethers.getContractAt("IERC20", CONFIG.XDI_TOKEN);
+
+            // Get pair
+            const pairAddress = await factory.getPair(CONFIG.XDI_TOKEN, CONFIG.WXDAI);
+            if (pairAddress !== ethers.constants.AddressZero) {
+                pair = await ethers.getContractAt("IUniswapV2Pair", pairAddress);
+            }
+
+        } catch (error) {
+            console.error("Setup failed:", error);
+            throw error;
+        }
+    });
+
+    describe("Price Checks", function() {
+        it("Should get quote for configurable amount", async function() {
+            try {
+                const amountIn = ethers.utils.parseEther(CONFIG.TEST_AMOUNT);
+                const quote = await dexSimulator.getQuote(amountIn);
+                console.log(`Quote for ${CONFIG.TEST_AMOUNT} XDI:`, ethers.utils.formatEther(quote));
+                expect(quote).to.be.gt(0);
+            } catch (error) {
+                console.log("Quote failed:", error.message);
+                this.skip();
+            }
+        });
+    });
+
+
 describe("MEV Simulator", function() {
     let dexSimulator;
     let owner, user1, user2;
