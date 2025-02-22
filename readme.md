@@ -31,7 +31,6 @@ This MEV Simulator is an experimental project designed strictly for educational 
 By using this codebase, you acknowledge that you understand these risks and will use it responsibly and ethically for educational purposes only.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY.
-```
 
 ## Table of Contents
 1. Project Overview
